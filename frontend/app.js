@@ -9,6 +9,7 @@ const tokenABI = [
 
 const fundABI = [
   "function contribute(uint256 campaignId) payable",
+  "function createCampaign(string title) returns (uint256)", 
   "function campaigns(uint256) view returns (address, string, uint256, uint256, uint256, bool)"
 ];
 
@@ -115,3 +116,26 @@ if (window.ethereum) {
   window.ethereum.on("chainChanged", () => window.location.reload());
   window.ethereum.on("accountsChanged", () => window.location.reload());
 }
+
+async function createCampaign() {
+    const title = document.getElementById("campaignTitle").value;
+    if (!title) {
+      alert("Enter campaign name");
+      return;
+    }
+  
+    const fundContract = new ethers.Contract(fundAddress, fundABI, signer);
+  
+    try {
+      const tx = await fundContract.createCampaign(title);
+      alert("We're creating a campaign... Waiting for the blockchain");
+      await tx.wait();
+      alert("The campaign has been successfully created!");
+    } catch (err) {
+      console.error("Create error:", err);
+      alert("Error creating. Check your console.");
+    }
+  }
+  
+
+  document.getElementById("createButton").onclick = createCampaign;
