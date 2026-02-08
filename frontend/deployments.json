@@ -1,6 +1,6 @@
 {
   "token": {
-    "address": "0x394CE28C2078d845650b024CeCBD753934dbf073",
+    "address": "0xfd47D1bB46029D20dd1620bB287E88126b4c765c",
     "abi": [
       "constructor()",
       "error ERC20InsufficientAllowance(address,uint256,uint256)",
@@ -32,7 +32,7 @@
     ]
   },
   "fund": {
-    "address": "0xf9a526D17fa36977686724BDE271b7530C43FABe",
+    "address": "0xA0b62d33Ad69762b0E07648E5c128425abD91920",
     "abi": [
       "constructor(address)",
       "function campaignCount() view returns (uint256)",
@@ -40,6 +40,7 @@
       "function contribute(uint256) payable",
       "function contributions(uint256,address) view returns (uint256)",
       "function createCampaign(string,uint256,uint256)",
+      "function faucet(uint256)",
       "function finalizeCampaign(uint256)",
       "function token() view returns (address)"
     ]

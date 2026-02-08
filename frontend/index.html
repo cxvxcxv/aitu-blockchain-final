@@ -1,38 +1,67 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>EduFund DApp</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="card">
-        <h1>🎓 EduFund Crowdfunding</h1>
-        <button id="connectButton">Connect MetaMask</button>
-        <p>Wallet: <span id="account">Not connected</span></p>
-        <p>Network: <span id="network">N/A</span></p>
-        
-        <hr>
-        
-        <h3>Balances</h3>
-        <p>ETH: <span id="ethBalance">0</span></p>
-        <p>EduTokens: <span id="tokenBalance">0</span></p>
+	<head>
+		<meta charset="UTF-8" />
+		<title>EduFund DApp</title>
+		<link
+			rel="stylesheet"
+			href="style.css" />
+	</head>
+	<body>
+		<div class="card">
+			<h1>EduFund Crowdfunding</h1>
+			<button id="connectButton">Connect MetaMask</button>
+			<p>Wallet: <span id="account">Not connected</span></p>
+			<p>Network: <span id="network">N/A</span></p>
 
-        <hr>
-        <h3>Create Campaign</h3>
-        <input type="text" id="campaignTitle" placeholder="Campaign Title">
-        <button id="createButton">Create Campaign</button>
-        
-        <hr>
-        
-        
-        <h3>Contribute</h3>
-        <input type="number" id="campaignId" placeholder="Campaign ID (0, 1...)" value="0">
-        <input type="number" id="amount" placeholder="Amount in ETH" step="0.01">
-        <button id="sendButton">Send ETH</button>
-    </div>
+			<hr />
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
-    <script src="app.js"></script>
-</body>
+			<h3>Balances</h3>
+			<p>ETH: <span id="ethBalance">0</span></p>
+			<p>EduTokens: <span id="tokenBalance">0</span></p>
+
+			<hr />
+			<h3>Create Campaign</h3>
+			<input
+				id="campaignTitle"
+				placeholder="Campaign title" />
+			<input
+				id="campaignGoal"
+				placeholder="Goal in ETH"
+				step="0.1"
+				type="number" />
+			<input
+				id="campaignDuration"
+				placeholder="Duration in days"
+				type="number" />
+			<button id="createButton">Create Campaign</button>
+
+			<hr />
+
+			<h3>Contribute</h3>
+			<input
+				type="number"
+				id="campaignId"
+				placeholder="Campaign ID (0, 1...)"
+				value="0" />
+			<input
+				type="number"
+				id="amount"
+				placeholder="Amount in ETH"
+				step="0.01" />
+			<button id="sendButton">Send ETH</button>
+
+			<hr />
+
+			<h3>Mint EduTokens</h3>
+			<input
+				id="faucetAmount"
+				placeholder="Amount of tokens to mint"
+				type="number" />
+			<button id="faucetButton">Mint Tokens via Fund</button>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+		<script src="app.js"></script>
+	</body>
 </html>

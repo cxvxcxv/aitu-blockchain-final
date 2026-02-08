@@ -2,19 +2,17 @@ let provider;
 let signer;
 let userAddress;
 let tokenContract;
+let tokenContractSigner;
 let fundContract;
 
-// Load deployments.json
 async function loadDeployments() {
 	try {
-		// deployments.json should be in frontend/public/
 		const res = await fetch('deployments.json');
 		const deployments = await res.json();
 
 		const tokenAddress = deployments.token.address;
 		const fundAddress = deployments.fund.address;
 
-		// ABIs are already arrays! No need to JSON.parse or replace
 		const tokenABI = deployments.token.abi;
 		const fundABI = deployments.fund.abi;
 
@@ -60,12 +58,11 @@ async function connect() {
 
 	document.getElementById('network').innerText = 'Sepolia';
 
-	// Load deployments
 	const { tokenAddress, fundAddress, tokenABI, fundABI } =
 		await loadDeployments();
 
-	// Initialize contracts
 	tokenContract = new ethers.Contract(tokenAddress, tokenABI, provider);
+	tokenContractSigner = new ethers.Contract(tokenAddress, tokenABI, signer);
 	fundContract = new ethers.Contract(fundAddress, fundABI, signer);
 
 	await updateBalances();
@@ -114,23 +111,28 @@ async function contribute() {
 
 async function createCampaign() {
 	const title = document.getElementById('campaignTitle').value;
-	if (!title) {
-		alert('Enter campaign name');
+	const goalEth = document.getElementById('campaignGoal').value;
+	const durationDays = document.getElementById('campaignDuration').value;
+
+	if (!title || !goalEth || !durationDays) {
+		alert('Enter campaign title, goal, and duration');
 		return;
 	}
 
+	const goalWei = ethers.parseEther(goalEth);
+	const durationSec = parseInt(durationDays) * 24 * 60 * 60;
+
 	try {
-		const tx = await fundContract.createCampaign(title);
-		alert("We're creating a campaign... Waiting for the blockchain");
+		const tx = await fundContract.createCampaign(title, goalWei, durationSec);
+		alert('Creating campaign... waiting for blockchain confirmation');
 		await tx.wait();
-		alert('The campaign has been successfully created!');
+		alert('Campaign successfully created!');
 	} catch (err) {
-		console.error('Create error:', err);
-		alert('Error creating. Check your console.');
+		console.error('Create campaign error:', err);
+		alert('Error creating campaign. Check console.');
 	}
 }
 
-// Event listeners
 document.getElementById('connectButton').onclick = connect;
 document.getElementById('sendButton').onclick = contribute;
 document.getElementById('createButton').onclick = createCampaign;
@@ -139,3 +141,33 @@ if (window.ethereum) {
 	window.ethereum.on('chainChanged', () => window.location.reload());
 	window.ethereum.on('accountsChanged', () => window.location.reload());
 }
+
+async function faucetTokens() {
+	if (!fundContract) {
+		alert('Please connect your wallet first');
+		return;
+	}
+
+	const amount = document.getElementById('faucetAmount').value;
+	if (!amount || amount <= 0) {
+		alert('Enter a valid amount');
+		return;
+	}
+
+	try {
+		const decimals = await tokenContract.decimals();
+		const amountParsed = ethers.parseUnits(amount, decimals);
+
+		const tx = await fundContract.faucet(amountParsed);
+		alert('Minting tokens via fund contract... waiting for confirmation');
+		await tx.wait();
+
+		alert('Tokens minted successfully!');
+		await updateBalances();
+	} catch (err) {
+		console.error('Faucet error:', err);
+		alert('Error minting tokens. Check console.');
+	}
+}
+
+document.getElementById('faucetButton').onclick = faucetTokens;

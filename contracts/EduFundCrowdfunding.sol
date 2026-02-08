@@ -4,7 +4,6 @@ pragma solidity ^0.8.20;
 import "./EduToken.sol";
 
 contract EduFundCrowdfunding {
-
     struct Campaign {
         address creator;
         string title;
@@ -30,7 +29,6 @@ contract EduFundCrowdfunding {
         uint256 goal,
         uint256 duration
     ) external {
-
         require(goal > 0, "Goal must be > 0");
         require(duration > 0, "Duration must be > 0");
 
@@ -47,7 +45,6 @@ contract EduFundCrowdfunding {
     }
 
     function contribute(uint256 campaignId) external payable {
-
         Campaign storage campaign = campaigns[campaignId];
 
         require(block.timestamp < campaign.deadline, "Campaign ended");
@@ -62,12 +59,15 @@ contract EduFundCrowdfunding {
     }
 
     function finalizeCampaign(uint256 campaignId) external {
-
         Campaign storage campaign = campaigns[campaignId];
 
         require(block.timestamp >= campaign.deadline, "Not ended");
         require(!campaign.finalized, "Already finalized");
 
         campaign.finalized = true;
+    }
+
+    function faucet(uint256 amount) external {
+        EduToken(token).mint(msg.sender, amount);
     }
 }
