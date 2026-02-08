@@ -1,0 +1,47 @@
+{
+  "token": {
+    "address": "0x394CE28C2078d845650b024CeCBD753934dbf073",
+    "abi": [
+      "constructor()",
+      "error ERC20InsufficientAllowance(address,uint256,uint256)",
+      "error ERC20InsufficientBalance(address,uint256,uint256)",
+      "error ERC20InvalidApprover(address)",
+      "error ERC20InvalidReceiver(address)",
+      "error ERC20InvalidSender(address)",
+      "error ERC20InvalidSpender(address)",
+      "error OwnableInvalidOwner(address)",
+      "error OwnableUnauthorizedAccount(address)",
+      "event Approval(address indexed,address indexed,uint256)",
+      "event OwnershipTransferred(address indexed,address indexed)",
+      "event Transfer(address indexed,address indexed,uint256)",
+      "function allowance(address,address) view returns (uint256)",
+      "function approve(address,uint256) returns (bool)",
+      "function balanceOf(address) view returns (uint256)",
+      "function crowdfundingContract() view returns (address)",
+      "function decimals() view returns (uint8)",
+      "function mint(address,uint256)",
+      "function name() view returns (string)",
+      "function owner() view returns (address)",
+      "function renounceOwnership()",
+      "function setCrowdfundingContract(address)",
+      "function symbol() view returns (string)",
+      "function totalSupply() view returns (uint256)",
+      "function transfer(address,uint256) returns (bool)",
+      "function transferFrom(address,address,uint256) returns (bool)",
+      "function transferOwnership(address)"
+    ]
+  },
+  "fund": {
+    "address": "0xf9a526D17fa36977686724BDE271b7530C43FABe",
+    "abi": [
+      "constructor(address)",
+      "function campaignCount() view returns (uint256)",
+      "function campaigns(uint256) view returns (address,string,uint256,uint256,uint256,bool)",
+      "function contribute(uint256) payable",
+      "function contributions(uint256,address) view returns (uint256)",
+      "function createCampaign(string,uint256,uint256)",
+      "function finalizeCampaign(uint256)",
+      "function token() view returns (address)"
+    ]
+  }
+}
