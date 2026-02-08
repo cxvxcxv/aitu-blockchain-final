@@ -5,18 +5,20 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract EduToken is ERC20, Ownable {
-
     address public crowdfundingContract;
 
     constructor() ERC20("EduToken", "EDU") Ownable(msg.sender) {}
-    
 
     modifier onlyCrowdfunding() {
-        require(msg.sender == crowdfundingContract, "Not crowdfunding contract");
+        require(
+            msg.sender == crowdfundingContract,
+            "Not crowdfunding contract"
+        );
         _;
     }
 
     function setCrowdfundingContract(address _contract) external onlyOwner {
+        require(_contract != address(0), "Invalid address");
         crowdfundingContract = _contract;
     }
 

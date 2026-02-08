@@ -11,6 +11,7 @@ contract EduFundCrowdfunding {
         uint256 deadline;
         uint256 raised;
         bool finalized;
+        bool successful;
     }
 
     uint256 public campaignCount;
@@ -40,15 +41,17 @@ contract EduFundCrowdfunding {
             goal: goal,
             deadline: block.timestamp + duration,
             raised: 0,
-            finalized: false
+            finalized: false,
+            successful: false
         });
     }
 
     function contribute(uint256 campaignId) external payable {
         Campaign storage campaign = campaigns[campaignId];
 
+        require(campaign.creator != address(0), "Campaign does not exist");
         require(block.timestamp < campaign.deadline, "Campaign ended");
-        require(!campaign.finalized, "Already finalized");
+        require(!campaign.finalized, "Campaign finalized");
         require(msg.value > 0, "Send ETH");
 
         campaign.raised += msg.value;
@@ -58,16 +61,56 @@ contract EduFundCrowdfunding {
         token.mint(msg.sender, reward);
     }
 
-    function finalizeCampaign(uint256 campaignId) external {
+    function _autoFinalize(uint256 campaignId) internal {
         Campaign storage campaign = campaigns[campaignId];
 
-        require(block.timestamp >= campaign.deadline, "Not ended");
-        require(!campaign.finalized, "Already finalized");
+        if (!campaign.finalized && block.timestamp >= campaign.deadline) {
+            campaign.finalized = true;
+            campaign.successful = campaign.raised >= campaign.goal;
+        }
+    }
 
-        campaign.finalized = true;
+    function withdraw(uint256 campaignId) external {
+        Campaign storage campaign = campaigns[campaignId];
+
+        require(campaign.creator != address(0), "Campaign does not exist");
+
+        _autoFinalize(campaignId);
+
+        require(campaign.finalized, "Not finalized");
+        require(campaign.successful, "Goal not reached");
+        require(msg.sender == campaign.creator, "Not creator");
+        require(campaign.raised > 0, "Already withdrawn");
+
+        uint256 amount = campaign.raised;
+        campaign.raised = 0;
+
+        (bool success, ) = payable(campaign.creator).call{value: amount}("");
+        require(success, "Transfer failed");
+    }
+
+    function refund(uint256 campaignId) external {
+        Campaign storage campaign = campaigns[campaignId];
+
+        require(campaign.creator != address(0), "Campaign does not exist");
+
+        _autoFinalize(campaignId);
+
+        require(campaign.finalized, "Not finalized");
+        require(!campaign.successful, "Campaign successful");
+
+        uint256 contributed = contributions[campaignId][msg.sender];
+        require(contributed > 0, "No contribution");
+
+        contributions[campaignId][msg.sender] = 0;
+
+        (bool success, ) = payable(msg.sender).call{value: contributed}("");
+        require(success, "Refund failed");
     }
 
     function faucet(uint256 amount) external {
-        EduToken(token).mint(msg.sender, amount);
+        require(amount > 0, "Amount must be > 0");
+        require(amount <= 1000 * 1e18, "Max 1000 tokens per call");
+        token.mint(msg.sender, amount);
     }
 }

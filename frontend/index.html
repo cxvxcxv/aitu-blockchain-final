@@ -21,6 +21,7 @@
 			<p>EduTokens: <span id="tokenBalance">0</span></p>
 
 			<hr />
+
 			<h3>Create Campaign</h3>
 			<input
 				id="campaignTitle"
@@ -38,18 +39,29 @@
 
 			<hr />
 
+			<h3>All Campaigns</h3>
+			<button id="refreshCampaigns">Refresh Campaigns</button>
+			<div id="campaignList"></div>
+
+			<hr />
+
 			<h3>Contribute</h3>
 			<input
 				type="number"
 				id="campaignId"
-				placeholder="Campaign ID (0, 1...)"
-				value="0" />
+				placeholder="Campaign ID" />
 			<input
 				type="number"
 				id="amount"
 				placeholder="Amount in ETH"
 				step="0.01" />
 			<button id="sendButton">Send ETH</button>
+
+			<hr />
+
+			<h3>Withdraw / Refund</h3>
+			<button id="withdrawButton">Collect Funds</button>
+			<button id="refundButton">Refund</button>
 
 			<hr />
 
